@@ -16,6 +16,8 @@ struct Server
 
     struct sockaddr_in address;
 
+    int socket;
+
     void(*launch)(void);
 };
 
