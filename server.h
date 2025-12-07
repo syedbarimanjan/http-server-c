@@ -5,8 +5,7 @@
 #include <netinet/in.h>
 #include <sys/types.h>
 
-struct Server
-{
+struct Server {
     int domain;
     int service;
     int protocol;

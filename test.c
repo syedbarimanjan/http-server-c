@@ -4,9 +4,8 @@
 #include <unistd.h>
 #include "server.h"
 
-void launch(struct Server *server)
-{
-    while(1){
+void launch(struct Server *server) {
+    while(1) {
         char buffer[30000];
         printf("=============== WAITING for CONNECTION ===============\n");
         int address_length = sizeof(server->address);
@@ -19,8 +18,7 @@ void launch(struct Server *server)
     }
 }
 
-int main()
-{
+int main() {
     struct Server server = server_constructor(AF_INET,SOCK_STREAM,0,INADDR_ANY,8080,10,launch);
     server.launch(&server);
 }
