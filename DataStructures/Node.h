@@ -3,7 +3,7 @@
 
 struct Node {
     void *data;
-    struct Node_int *next;
+    struct Node *next;
 };
 
 #endif
