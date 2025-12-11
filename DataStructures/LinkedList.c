@@ -4,14 +4,14 @@
 
 struct Node * create_node(void *data);
 void destroy_node(struct Node *node_to_destroy);
-struct Node * iterate(int index, struct LinkedList_int *linked_list);
+struct Node * iterate(int index, struct LinkedList *linked_list);
 
-void insert_node(int index,void *data, struct LinkedList_int *linked_list);
-void remove_node(int index, struct LinkedList_int *linked_list);
-void * retrieve_data(int index, struct LinkedList_int *linked_list);
+void insert_node(int index,void *data, struct LinkedList *linked_list);
+void remove_node(int index, struct LinkedList *linked_list);
+void * retrieve_data(int index, struct LinkedList *linked_list);
 
-struct LinkedList_int linked_list_int_constructor(){
-  struct LinkedList_int new_list;
+struct LinkedList linked_list_constructor(){
+  struct LinkedList new_list;
   new_list.head = NULL;
   new_list.length = 0;
 
@@ -37,7 +37,7 @@ void destroy_node(struct Node *node_to_destroy){
     free(node_to_destroy);
 }
 
-struct Node * iterate(int index, struct LinkedList_int *linked_list){
+struct Node * iterate(int index, struct LinkedList *linked_list){
     if( index < 0 || index >= linked_list->length){
         printf("Index out of bound...");
         exit(-1);
@@ -49,7 +49,7 @@ struct Node * iterate(int index, struct LinkedList_int *linked_list){
     return cursor;
 };
 
-void insert_node(int index, void *data, struct LinkedList_int *linked_list){
+void insert_node(int index, void *data, struct LinkedList *linked_list){
     struct Node *node_to_insert = create_node(data);
     if(index == 0){
         node_to_insert->next = linked_list->head;
@@ -62,7 +62,7 @@ void insert_node(int index, void *data, struct LinkedList_int *linked_list){
     linked_list->length += 1;
 };
 
-void remove_node(int index, struct LinkedList_int *linked_list){
+void remove_node(int index, struct LinkedList *linked_list){
     if(index == 0){
       struct Node *node_to_remove = linked_list->head;
       linked_list->head = node_to_remove->next;
@@ -76,7 +76,7 @@ void remove_node(int index, struct LinkedList_int *linked_list){
     linked_list->length -= 1;
 };
 
-void * retrieve_data(int index, struct LinkedList_int *linked_list){
+void * retrieve_data(int index, struct LinkedList *linked_list){
     struct Node *cursor = iterate(index, linked_list);
     return cursor->data;
 };
