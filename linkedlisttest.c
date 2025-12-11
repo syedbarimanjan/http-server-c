@@ -4,7 +4,7 @@
 
 int main(){
 
-    struct LinkedList_int list = linked_list_int_constructor();
+    struct LinkedList list = linked_list_constructor();
 
     for (int i = 0; i < 10; i++) {
         int *x = (int *)malloc(sizeof(int));
