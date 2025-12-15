@@ -4,6 +4,7 @@
 
 struct Node * create_node(void *data, int size);
 void destroy_node(struct Node *node_to_destroy);
+void recursive_tree_destruction(struct Node *node);
 
 void insert(struct BinarySearchTree *tree, void *data, int size);
 void * search(struct BinarySearchTree *tree, void *data);
@@ -17,6 +18,10 @@ struct BinarySearchTree binary_search_tree_constructor(int (*compare)(void *data
     return tree;
 };
 
+void binary_search_tree_destructor(struct BinarySearchTree tree){
+    recursive_tree_destruction(tree.head);
+}
+
 struct Node * create_node(void *data, int size){
     struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
     *new_node = node_constructor(data, size);
@@ -25,6 +30,17 @@ struct Node * create_node(void *data, int size){
 
 void destroy_node(struct Node *node_to_destroy){
     node_destructor(node_to_destroy);
+}
+
+// depth first binary tree traversal
+void recursive_tree_destructor(struct Node *node){
+    if (node->prev){
+        recursive_tree_destruction(node->prev);
+    }
+    if(node->next){
+        recursive_tree_destruction(node->next);
+    }
+    destroy_node(node);
 }
 
 struct Node * iterate(struct BinarySearchTree *tree, struct Node *cursor, void *data, int *direction){
