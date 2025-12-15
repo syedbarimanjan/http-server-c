@@ -4,6 +4,7 @@
 struct Node {
     void *data;
     struct Node *next;
+    struct Node * prev;
 };
 
 struct Node node_constructor(void *data, int size);

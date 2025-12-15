@@ -24,6 +24,7 @@ struct Node node_constructor(void *data, int size){
     node.data = malloc(size);
     memcpy(node.data, data, size);
     node.next = NULL;
+    node.prev = NULL;
     return node;
 }
 
