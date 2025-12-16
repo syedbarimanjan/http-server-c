@@ -75,11 +75,15 @@ void * search(struct BinarySearchTree *tree, void *data){
 }
 
 void insert(struct BinarySearchTree *tree, void *data, int size){
-    int *direction;
-    struct Node *cursor = iterate(tree, tree->head, data, direction);
-    if(*direction == 1){
-        cursor->next = create_node(data, size);
-    } else if (*direction == -1){
-        cursor->prev = create_node(data, size);
+    if(!tree->head){
+        tree->head = create_node(data, size);
+    } else {
+        int *direction;
+        struct Node *cursor = iterate(tree, tree->head, data, direction);
+        if(*direction == 1){
+            cursor->next = create_node(data, size);
+        } else if (*direction == -1){
+            cursor->prev = create_node(data, size);
+        }
     }
 }

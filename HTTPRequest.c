@@ -43,8 +43,8 @@ struct HTTPRequest HTTPRequest_constructor(char *request_string) {
     strcpy(requested, request_string);
 
     for (int i = 0; i < strlen(requested) - 2; i++) {
-        if(requested[i] == "\n" && requested[i + 1] == "\n") {
-            requested[i + 1] = "|";
+        if(requested[i] == '\n' && requested[i + 1] == '\n') {
+            requested[i + 1] = '|';
         }
     }
 
@@ -60,6 +60,8 @@ struct HTTPRequest HTTPRequest_constructor(char *request_string) {
     HTTPVersion = strtok(HTTPVersion, "/");
     HTTPVersion = strtok(NULL, "/");
     request.HTTPVersion = (float)atof(HTTPVersion);
+
+
 
     return request;
 }
