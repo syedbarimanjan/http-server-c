@@ -1,5 +1,5 @@
-#ifndef server_h
-#define server_h
+#ifndef HTTPRequest_h
+#define HTTPRequest_h
 
 #include "./DataStructures/Dictionary/Dictionary.h"
 
