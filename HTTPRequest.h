@@ -16,12 +16,15 @@ enum HTTPMethods {
 };
 
 struct HTTPRequest {
-    int Method;
-    char *URI;
-    float HTTPVersion;
+    // int Method;
+    // char *URI;
+    // float HTTPVersion;
     struct Dictionary header_fields;
+    struct Dictionary request_line;
+    struct Dictionary body;
 };
 
-struct HTTPRequest HTTPRequest_constructor(char *request_string);
+struct HTTPRequest http_request_constructor(char *request_string);
+void http_request_destructor(struct HTTPRequest *request);
 
 #endif
