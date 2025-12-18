@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include "server.h"
@@ -21,6 +19,6 @@
 // }
 
 int main() {
-    struct Server server = server_constructor(AF_INET,SOCK_STREAM,0,INADDR_ANY,8080,10,launch);
+    struct Server server = server_constructor(AF_INET,SOCK_STREAM,0,INADDR_ANY,8080,20,launch_httpserver);
     server.launch(&server);
 }

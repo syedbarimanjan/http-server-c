@@ -48,7 +48,7 @@ struct HTTPRequest http_request_constructor(char *request_string) {
     char requested[strlen(request_string)];
     strcpy(requested, request_string);
 
-    for (int i = 0; i < strlen(requested) - 2; i++) {
+    for (int i = 0; i < (int)strlen(requested) - 2; i++) {
         if(requested[i] == '\n' && requested[i + 1] == '\n') {
             requested[i + 1] = '|';
         }
@@ -100,6 +100,10 @@ void http_request_destructor(struct HTTPRequest *request){
 }
 
 void extract_request_line_fields(struct HTTPRequest *request, char *request_line){
+
+    if(!request_line){
+        return;
+    }
     char fields[strlen(request_line)];
     strcpy(fields, request_line);
 

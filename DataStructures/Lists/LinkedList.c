@@ -1,9 +1,9 @@
 #include "LinkedList.h"
 #include <stdio.h>
 
-struct Node * create_node(void *data, int size);
-void destroy_node(struct Node *node_to_destroy);
-struct Node * iterate(struct LinkedList *linked_list, int index);
+struct Node * create_node_linkedlist(void *data, int size);
+void destroy_node_linkedlist(struct Node *node_to_destroy);
+struct Node * iterate_linkedlist(struct LinkedList *linked_list, int index);
 
 void insert_node(struct LinkedList *linked_list, int index, void *data, int size);
 void remove_node(struct LinkedList *linked_list, int index);
@@ -22,17 +22,17 @@ struct LinkedList linked_list_constructor(){
 
 };
 
-struct Node * create_node(void *data, int size){
+struct Node * create_node_linkedlist(void *data, int size){
     struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
     *new_node = node_constructor(data, size);
     return new_node;
 }
 
-void destroy_node(struct Node *node_to_destroy){
+void destroy_node_linkedlist(struct Node *node_to_destroy){
     node_destructor(node_to_destroy);
 }
 
-struct Node * iterate(struct LinkedList *linked_list, int index){
+struct Node * iterate_linkedlist(struct LinkedList *linked_list, int index){
     if( index < 0 || index >= linked_list->length){
         printf("Index out of bound...");
         exit(-1);
@@ -45,12 +45,12 @@ struct Node * iterate(struct LinkedList *linked_list, int index){
 };
 
 void insert_node(struct LinkedList *linked_list, int index, void *data, int size){
-    struct Node *node_to_insert = create_node(data, size);
+    struct Node *node_to_insert = create_node_linkedlist(data, size);
     if(index == 0){
         node_to_insert->next = linked_list->head;
         linked_list->head = node_to_insert;
     } else {
-        struct Node *cursor = iterate(linked_list, index - 1);
+        struct Node *cursor = iterate_linkedlist(linked_list, index - 1);
         node_to_insert->next = cursor->next;
         cursor->next = node_to_insert;
     }
@@ -61,18 +61,18 @@ void remove_node(struct LinkedList *linked_list, int index){
     if(index == 0){
       struct Node *node_to_remove = linked_list->head;
       linked_list->head = node_to_remove->next;
-      destroy_node(node_to_remove);
+      destroy_node_linkedlist(node_to_remove);
     } else {
-        struct Node *cursor = iterate(linked_list, index - 1);
+        struct Node *cursor = iterate_linkedlist(linked_list, index - 1);
         struct Node *node_to_remove = cursor->next;
         cursor->next = node_to_remove->next;
-        destroy_node(node_to_remove);
+        destroy_node_linkedlist(node_to_remove);
     }
     linked_list->length -= 1;
 };
 
 void * retrieve_data(struct LinkedList *linked_list, int index){
-    struct Node *cursor = iterate(linked_list, index);
+    struct Node *cursor = iterate_linkedlist(linked_list, index);
     return cursor->data;
 };
 

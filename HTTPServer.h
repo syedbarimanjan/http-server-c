@@ -11,5 +11,6 @@ struct HTTPServer {
 };
 
 struct HTTPServer http_server_constructor(void);
+void launch_httpserver(struct Server *server);
 
 #endif

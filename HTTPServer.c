@@ -9,9 +9,9 @@
 
 void retrieve_page(struct HTTPRequest request, int socket);
 
-void launch(struct Server *server);
+// void launch_httpserver(struct Server *server);
 
-void launch(struct Server *server){
+void launch_httpserver(struct Server *server){
     int addrlen = sizeof(server->address);
     long valread;
     while(1){
@@ -29,7 +29,7 @@ void retrieve_page(struct HTTPRequest request, int socket){
     char path[30000] = {0};
 
     char *url = strtok(request.request_line.search(&request.request_line, "uri"), "?");
-    char *vars = strtok(NULL, "\0");
+    // char *vars = strtok(NULL, "\0");
 
     strcpy(path, "/home/sbj/Desktop");
     if(strcmp(url, "/test") == 0){
@@ -39,14 +39,14 @@ void retrieve_page(struct HTTPRequest request, int socket){
     }
     strcat(path, ".html");
 
-    FILE f = *fopen(path, "r");
-    fseek(&f, 0, SEEK_END);
-    long fsize = ftell(&f);
-    fseek(&f, 0, SEEK_SET);
+    FILE *f = fopen(path, "r");
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
 
     char *buffer = malloc(fsize + 1);
-    fread(buffer, 1, fsize, &f);
-    fclose(&f);
+    fread(buffer, 1, fsize, f);
+    fclose(f);
 
     char response[30000] = {0};
     strcpy(response, "HTTP/1.1 200 OK\nContent-Type: text/html\n\n");
