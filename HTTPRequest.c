@@ -55,39 +55,11 @@ struct HTTPRequest http_request_constructor(char *request_string) {
     }
 
     char *request_line = strtok(requested, "\n");
-    char *heador_fields = strtok(NULL, "|");
+    char *header_fields = strtok(NULL, "|");
     char *body = strtok(NULL, "|");
 
-    // char *method = strtok(request_line," ");
-    // request.Method = method_select(request_line);
-    // char *URI = strtok(NULL, " ");
-    // request.URI = URI;
-    // char *HTTPVersion = strtok(NULL, " ");
-    // HTTPVersion = strtok(HTTPVersion, "/");
-    // HTTPVersion = strtok(NULL, "/");
-    // request.HTTPVersion = (float)atof(HTTPVersion);
-
-    // request.header_fields = dictionary_constructor(compare_string_keys);
-
-    // struct Queue headers = queue_constructor();
-
-    // char *token = strtok(heador_fields, "\n");
-    // while(token){
-    //     headers.push(&headers, token, sizeof(*token));
-    //     token = strtok(NULL, "\n");
-    // }
-
-    // char *header = (char *)headers.peek(&headers);
-    // while(header){
-    //     char *key = strtok(header, ":");
-    //     char *value = strtok(NULL, "|");
-    //     request.header_fields.insert(&request.header_fields,key, sizeof(*key), value,sizeof(*value));
-    //     headers.pop(&headers);
-    //     header = (char *)headers.peek(&headers);
-    // }
-
     extract_request_line_fields(&request, request_line);
-    extract_header_fields(&request, heador_fields);
+    extract_header_fields(&request, header_fields);
     extract_body(&request, body);
 
     return request;
@@ -108,13 +80,8 @@ void extract_request_line_fields(struct HTTPRequest *request, char *request_line
     strcpy(fields, request_line);
 
     char *method = strtok(fields," ");
-    // request.Method = method_select(request_line);
     char *uri = strtok(NULL, " ");
-    // request.URI = URI;
     char *http_version = strtok(NULL, "\0");
-    // HTTPVersion = strtok(HTTPVersion, "/");
-    // HTTPVersion = strtok(NULL, "/");
-    // request.HTTPVersion = (float)atof(HTTPVersion);
     struct Dictionary request_line_dict = dictionary_constructor(compare_string_keys);
     request_line_dict.insert(&request_line_dict, "method", sizeof("method"), method, sizeof(char[strlen(method)]));
     request_line_dict.insert(&request_line_dict, "uri", sizeof("uri"), uri, sizeof(char[strlen(uri)]));

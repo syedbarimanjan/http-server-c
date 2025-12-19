@@ -29,7 +29,7 @@ void retrieve_page(struct HTTPRequest request, int socket){
     char path[30000] = {0};
 
     char *url = strtok(request.request_line.search(&request.request_line, "uri"), "?");
-    // char *vars = strtok(NULL, "\0");
+    char *vars = strtok(NULL, "\0");
 
     strcpy(path, "/home/sbj/Desktop");
     if(strcmp(url, "/test") == 0){
