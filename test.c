@@ -18,7 +18,14 @@
 //     }
 // }
 
-int main() {
-    struct Server server = server_constructor(AF_INET,SOCK_STREAM,0,INADDR_ANY,8080,20,launch_httpserver);
-    server.launch(&server);
-}
+// int main() {
+//     struct Server server = server_constructor(AF_INET,SOCK_STREAM,0,INADDR_ANY,8080,20,launch_httpserver);
+//     server.launch(&server);
+// }
+
+// char * render_template();
+
+// char * example(struct HTTPServer *server, struct HTTPRequest *request){
+//     return render_template();
+// }
+
