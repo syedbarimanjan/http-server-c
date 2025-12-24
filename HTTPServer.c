@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -16,6 +17,7 @@
 void register_routes(struct HTTPServer *server, char * (*route_function)(struct HTTPServer *server, struct HTTPRequest *request), char *uri, int num_methods, ...);
 void launch(struct HTTPServer *server);
 void *handler(void *arg);
+char * render_template(int num_templates, ...);
 
 struct ClientServer{
     int client;
@@ -38,6 +40,8 @@ void register_routes(struct HTTPServer *server, char * (*route_function)(struct 
     for (int i = 0; i < num_methods; i++) {
         route.methods[i] = va_arg(methods, int);
     }
+    char buffer[strlen(uri)];
+    route.uri = buffer;
     strcpy(route.uri, uri);
     route.route_function = route_function;
 
@@ -71,3 +75,22 @@ void * handler(void *arg){
     free(client_server);
     return NULL;
 };
+
+char * render_template(int num_templates, ...){
+    va_list files;
+    va_start(files, num_templates);
+    char *buffer = malloc(30000);
+    int buffer_position = 0;
+    char c;
+    FILE *file;
+    for (int i = 0; i < num_templates; i++) {
+        char *path = va_arg(files, char*);
+        file = fopen(path, "r");
+        while ((c = fgetc(file)) != EOF) {
+            buffer[buffer_position] = c;
+            buffer_position +=1;
+        }
+    }
+    va_end(files);
+    return buffer;
+}

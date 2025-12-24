@@ -12,7 +12,7 @@ struct ThreadPool thread_pool_constructor(int num_threads){
     thread_pool.active = 1;
     thread_pool.pool = (pthread_t *)malloc(sizeof(pthread_t[num_threads]));
     for (int i = 0; i < num_threads; i++) {
-        pthread_create(&thread_pool.pool[i] ,NULL, thread_job , NULL);
+        pthread_create(&thread_pool.pool[i] ,NULL, thread_job , &thread_pool);//&thread_pool;
     }
     thread_pool.work = queue_constructor();
     thread_pool.lock = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
@@ -49,11 +49,11 @@ void * thread_job(void *arg){
     while(thread_pool->active == 1){
         pthread_mutex_lock(&thread_pool->lock);
         pthread_cond_wait(&thread_pool->signal, &thread_pool->lock);
-        struct ThreadJob job = *(struct ThreadJob *)thread_pool->work.peek(&thread_pool->work);
+        struct ThreadJob *job = (struct ThreadJob *)thread_pool->work.peek(&thread_pool->work);
         thread_pool->work.pop(&thread_pool->work);
         pthread_mutex_unlock(&thread_pool->lock);
-        if(job.job){
-            job.job(job.arg);
+        if(job->job){
+            job->job(job->arg);
         }
     }
     return NULL;
