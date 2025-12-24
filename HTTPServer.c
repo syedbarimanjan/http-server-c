@@ -1,8 +1,12 @@
+#include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/socket.h>
+#include <unistd.h>
 #include "HTTPServer.h"
+#include "HTTPRequest.h"
 #include "Route.h"
-
+#include "ThreadPoll.h"
 
 
 // x     → value
@@ -10,12 +14,17 @@
 // ptr   → address
 // *ptr  → value at address
 void register_routes(struct HTTPServer *server, char * (*route_function)(struct HTTPServer *server, struct HTTPRequest *request), char *uri, int num_methods, ...);
+void launch(struct HTTPServer *server);
+void *handler(void *arg);
 
-void launch(struct Server *);
+struct ClientServer{
+    int client;
+    struct HTTPServer *server;
+};
 
 struct HTTPServer http_server_constructor(){
     struct HTTPServer server;
-    server.server = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, 8080, 255, launch);
+    server.server = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, 8080, 255);
     server.routes = dictionary_constructor(compare_string_keys);
     server.register_routes = register_routes;
 
@@ -35,108 +44,30 @@ void register_routes(struct HTTPServer *server, char * (*route_function)(struct 
     server->routes.insert(&server->routes, uri, sizeof(char[strlen(uri)]), &route, sizeof(route));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// void retrieve_page(struct HTTPRequest request, int socket);
-
-// void launch_httpserver(struct Server *server);
-
-// void launch_httpserver(struct Server *server){
-//     int addrlen = sizeof(server->address);
-//     long valread;
-//     while(1){
-//         printf("===== waiting ===== \n");
-//         int new_socket = accept(server->socket , (struct sockaddr *)&server->address, (socklen_t *)&addrlen);
-//         char buffer[30000];
-//         valread = read(new_socket, buffer, 30000);
-//         struct HTTPRequest request = http_request_constructor(buffer);
-//         retrieve_page(request, new_socket);
-//         close(new_socket);
-//     }
-// }
-
-// void retrieve_page(struct HTTPRequest request, int socket){
-//     char path[30000] = {0};
-
-//     char *url = strtok(request.request_line.search(&request.request_line, "uri"), "?");
-//     char *vars = strtok(NULL, "\0");
-
-//     strcpy(path, "/home/sbj/Desktop");
-//     if(strcmp(url, "/test") == 0){
-//         strcat(path, url);
-//     } else {
-//         strcat(path, "/index");
-//     }
-//     strcat(path, ".html");
-
-//     FILE *f = fopen(path, "r");
-//     fseek(f, 0, SEEK_END);
-//     long fsize = ftell(f);
-//     fseek(f, 0, SEEK_SET);
-
-//     char *buffer = malloc(fsize + 1);
-//     fread(buffer, 1, fsize, f);
-//     fclose(f);
-
-//     char response[30000] = {0};
-//     strcpy(response, "HTTP/1.1 200 OK\nContent-Type: text/html\n\n");
-//     strcat(response, buffer);
-//     write(socket, response, strlen(response));
-
-// }
+void launch(struct HTTPServer *server){
+    struct ThreadPool thread_pool = thread_pool_constructor(16);
+    struct sockaddr *sock_addr = (struct sockaddr *)&server->server.address;
+    socklen_t address_length = (socklen_t)sizeof(server->server.address);
+    while(1){
+        struct ClientServer *client_server = malloc(sizeof(struct ClientServer));
+        client_server->client = accept(server->server.socket,sock_addr,&address_length);
+        client_server->server = server;
+        struct ThreadJob job = thread_job_constructor(handler, client_server);
+        thread_pool.add_work(&thread_pool,job);
+    }
+}
+
+void * handler(void *arg){
+    struct ClientServer *client_server = (struct ClientServer *)arg;
+    char request_string[30000];
+    read(client_server->client, request_string, 30000);
+    struct HTTPRequest request = http_request_constructor(request_string);
+    //add size of to search
+    char *uri = request.request_line.search(&request.request_line, "uri");
+    // todo add sizeof(char[strlen(uri)]) to search fucntion of dictionary.
+    struct Route *route = client_server->server->routes.search(&client_server->server->routes, uri);
+    char *response = route->route_function(client_server->server,&request);
+    write(client_server->client, response, sizeof(char[strlen(response)]));
+    free(client_server);
+    return NULL;
+};

@@ -33,7 +33,7 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
       exit(1);
   }
 
-  server.launch = launch;
+//   server.launch = launch;
 
   return server;
 };

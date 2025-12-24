@@ -60,5 +60,8 @@ void * thread_job(void *arg){
 }
 
 void add_work(struct ThreadPool *thread_pool,struct ThreadJob job){
-    thread_pool->work.push(&thread_pool->work, &job, sizeof(job));
+    pthread_mutex_lock(&thread_pool->lock);
+    thread_pool->work.push(&thread_pool->work, &thread_job, sizeof(thread_job));
+    pthread_cond_signal(&thread_pool->signal);
+    pthread_mutex_unlock(&thread_pool->lock);
 }
